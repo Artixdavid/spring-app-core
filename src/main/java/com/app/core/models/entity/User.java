@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -62,6 +63,11 @@ public class User implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
 	private Date createAt;
+	
+	@PrePersist
+	private void prePersist() {
+		createAt = new Date();
+	}
 
 	public Long getId() {
 		return id;
