@@ -17,8 +17,26 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<User> findall() {
+	public List<User> findAll() {
 		return (List<User>) userDao.findAll();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public User findById(Long id) {
+		return (User) userDao.findById(id).orElse(null);
+	}
+
+	@Override
+	@Transactional
+	public User save(User user) {
+		return userDao.save(user);
+	}
+
+	@Override
+	@Transactional
+	public void delete(Long id) {
+		userDao.deleteById(id);
 	}
 
 }
