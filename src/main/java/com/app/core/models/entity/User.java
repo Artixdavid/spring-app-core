@@ -2,12 +2,16 @@ package com.app.core.models.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -17,8 +21,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
@@ -29,6 +33,10 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "serial")
 	private Long id;
+	
+	@NotEmpty
+	@UniqueElements
+	private String username;
 
 	@NotEmpty
 	private String firstName;
@@ -49,6 +57,10 @@ public class User implements Serializable {
 
 	private String photo_ex;
 
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private List<Role> roles;
+
 	@NotEmpty
 	private boolean enabled;
 
@@ -63,7 +75,7 @@ public class User implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
 	private Date createAt;
-	
+
 	@PrePersist
 	private void prePersist() {
 		createAt = new Date();
@@ -156,6 +168,33 @@ public class User implements Serializable {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
+
+	public String getPhoto_ex() {
+		return photo_ex;
+	}
+
+	public void setPhoto_ex(String photo_ex) {
+		this.photo_ex = photo_ex;
+	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+	
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
 
 	/**
 	 * 
