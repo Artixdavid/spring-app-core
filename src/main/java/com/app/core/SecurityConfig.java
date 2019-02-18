@@ -2,6 +2,7 @@ package com.app.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		
 		http.authorizeRequests()
-		.antMatchers("/", "/css/**", "/js/**", "/img/**", "/listar**")
+		.antMatchers("/","/api/login").hasAnyRole("USER")
+		.antMatchers(HttpMethod.GET, "/api/users")
 		.permitAll()
 		//.antMatchers("/ver/**").hasAnyRole("USER")
 		.anyRequest()

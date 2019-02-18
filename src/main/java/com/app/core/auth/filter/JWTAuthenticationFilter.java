@@ -78,7 +78,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("token", token);
 		body.put("user", (org.springframework.security.core.userdetails.User) authResult.getPrincipal());
-		body.put("mensaje", "No pos guau");
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 		response.setStatus(200);
@@ -88,8 +87,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-
-		System.out.println("Failed: " + failed);
 
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("mensaje", "Usuario o contrasena incorrecto");
