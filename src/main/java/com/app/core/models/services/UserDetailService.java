@@ -13,9 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.app.core.models.dao.IUserDao;
-import com.app.core.models.entity.Role;
+import com.app.core.models.entity.Privilege;
 
-@Service("jpaUserDetailService")
+@Service("UserDetailService")
 public class UserDetailService implements UserDetailsService {
 
 	@Autowired
@@ -36,8 +36,8 @@ public class UserDetailService implements UserDetailsService {
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-		for (Role role : user.getRoles()) {
-			authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+		for (Privilege privilege : user.getPrivilege()) {
+			authorities.add(new SimpleGrantedAuthority(privilege.getRole().getName())); // getAuthority
 		}
 
 		if (authorities.isEmpty()) {

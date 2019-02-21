@@ -21,5 +21,21 @@ public class Validate {
         return o;
     }
     */
+	
+	public static boolean isNull(Object value) {
+        return value == null;
+    }
+	
+	public static boolean isNullOrEmpty(Object value) {
+        if (isNull(value)) {
+            return true;
+        }
+        
+        if (value.toString().trim().isEmpty()) {
+            return true;
+        }
+        
+        return false;
+    }
 
 }

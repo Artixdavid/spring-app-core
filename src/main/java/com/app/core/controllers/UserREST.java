@@ -3,11 +3,11 @@ package com.app.core.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.app.core.match.MatchCreateUser;
 import com.app.core.models.entity.User;
+import com.app.core.models.services.RoleServiceImpl;
 import com.app.core.models.services.UserServiceImpl;
 
 @CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.DELETE, RequestMethod.GET,
@@ -31,6 +32,8 @@ public class UserREST {
 
 	@Autowired
 	private UserServiceImpl userService;
+	
+	private RoleServiceImpl roleService;
 
 	@GetMapping("/users")
 	public List<User> getUsers() {
@@ -60,7 +63,30 @@ public class UserREST {
 
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public User create(@RequestBody User user) {
+	public User create(@RequestBody MatchCreateUser createUser) {
+		
+		User user = new User();
+		
+		user.setUsername(createUser.getUsername());
+		user.setFirstName(createUser.getFirstName());
+		user.setLastName(createUser.getLastName());
+		user.setEmail(createUser.getEmail());
+		
+		BCryptPasswordEncoder bCryptPassEncoder = new BCryptPasswordEncoder();
+		String passwordEncode = bCryptPassEncoder.encode(createUser.getPassword());
+		user.setPassword(passwordEncode);
+		user.setPhone(createUser.getPhone());
+		
+		
+		//user.setPhoto_ex(createUser.getP)());
+		user = userService.save(user);
+		
+		
+		
+		
+		
+		
+		
 		return userService.save(user);
 	}
 

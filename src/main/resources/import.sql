@@ -7,6 +7,5 @@ INSERT INTO users (username,first_name,last_name,mother_last_name,email,password
 
 /* ROLEs */
 
-insert into authorities  (user_id, authority) values (1,'ROLE_USER');
-insert into authorities  (user_id, authority) values (1,'ROLE_ADMIN');
-insert into authorities  (user_id, authority) values (2,'ROLE_USER');
+insert into role (name) values ('ROLE_USER'),('ROLE_ADMIN');
+insert into privilege (user_id, role_id) values (1,1),(1,2),(2,1);

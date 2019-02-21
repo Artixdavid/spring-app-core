@@ -20,11 +20,9 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -36,7 +34,7 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(columnDefinition = "serial")
 	private Long id;
-	
+
 	@NotEmpty
 	@UniqueElements
 	private String username;
@@ -63,7 +61,7 @@ public class User implements Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
-	private List<Role> roles;
+	private List<Privilege> privilege;
 
 	@NotEmpty
 	private boolean enabled;
@@ -83,6 +81,7 @@ public class User implements Serializable {
 	@PrePersist
 	private void prePersist() {
 		createAt = new Date();
+		enabled = Boolean.TRUE;
 	}
 
 	public Long getId() {
@@ -181,14 +180,13 @@ public class User implements Serializable {
 		this.photo_ex = photo_ex;
 	}
 
-	public List<Role> getRoles() {
-		return roles;
+	public List<Privilege> getPrivilege() {
+		return privilege;
 	}
 
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
+	public void setPrivilege(List<Privilege> privilege) {
+		this.privilege = privilege;
 	}
-	
 
 	public String getUsername() {
 		return username;
@@ -197,8 +195,6 @@ public class User implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-
 
 	/**
 	 * 

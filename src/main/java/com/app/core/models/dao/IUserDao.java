@@ -8,5 +8,4 @@ public interface IUserDao extends CrudRepository<User, Long>{
 	
 	public User findByUsername(String username);
 	
-
 }
