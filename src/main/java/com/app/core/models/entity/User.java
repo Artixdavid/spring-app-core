@@ -20,7 +20,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,8 +34,8 @@ public class User implements Serializable {
 	@Column(columnDefinition = "serial")
 	private Long id;
 
+	@Column(columnDefinition = "text")
 	@NotEmpty
-	@UniqueElements
 	private String username;
 
 	@NotEmpty
@@ -63,10 +62,8 @@ public class User implements Serializable {
 	@JoinColumn(name = "user_id")
 	private List<Privilege> privilege;
 
-	@NotEmpty
 	private boolean enabled;
 
-	@NotEmpty
 	@OneToOne
 	@JoinColumn(name = "status_id", referencedColumnName = "id")
 	private Status status;
@@ -75,8 +72,23 @@ public class User implements Serializable {
 	@Column(name = "create_at")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createAt;
+
+	@Column(name = "about_me", columnDefinition="text")
+	private String aboutMe;
+
+	@Column(name = "second_name")
+	private String secondName;
+
+	@Column(name = "fecha_nacimiento")
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date fechaNacimiento;
+
+	@Column(name = "address")
+	private String address;
 
 	@PrePersist
 	private void prePersist() {
@@ -194,6 +206,38 @@ public class User implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+
+	public String getAboutMe() {
+		return aboutMe;
+	}
+
+	public void setAboutMe(String aboutMe) {
+		this.aboutMe = aboutMe;
+	}
+
+	public String getSecondName() {
+		return secondName;
+	}
+
+	public void setSecondName(String secondName) {
+		this.secondName = secondName;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	/**

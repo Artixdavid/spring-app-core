@@ -6,7 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "privilege")
@@ -17,10 +21,13 @@ public class Privilege implements Serializable {
 	@Column(columnDefinition = "serial")
 	private Long id;
 
-	@Column(name="user_id")
+	@ManyToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@JsonBackReference
 	private User user;
 
-	@Column(name="role_id")
+	@OneToOne
+	@JoinColumn(name = "role_id", referencedColumnName = "id")
 	private Role role;
 
 	public Long getId() {

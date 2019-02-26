@@ -2,23 +2,16 @@ package com.app.core.match;
 
 public class MatchCreateUser {
 
-	private String username;
+	// private String username;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private String password;
-	private String motherLastName;
-	private String phone;
-	private boolean enabled;
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
+	// private String motherLastName;
+	// private String phone;
+	// private boolean enabled;
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -49,30 +42,6 @@ public class MatchCreateUser {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getMotherLastName() {
-		return motherLastName;
-	}
-
-	public void setMotherLastName(String motherLastName) {
-		this.motherLastName = motherLastName;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 }

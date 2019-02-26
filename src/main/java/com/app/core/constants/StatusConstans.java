@@ -1,6 +1,6 @@
 package com.app.core.constants;
 
-public class Status {
+public class StatusConstans {
 
 	public static final Long ACTIVO = 1L;
 	

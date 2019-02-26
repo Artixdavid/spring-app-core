@@ -33,9 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		
-		http.authorizeRequests()
-		.antMatchers("/","/api/login").hasAnyRole("USER")
-		.antMatchers(HttpMethod.GET, "/api/users")
+		http.cors().and().authorizeRequests() //colocar el CORS().AND para que funcione en angular
+		//.antMatchers("/","/api/login").hasAnyRole("USER")
+		//.antMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole("USER")
+		.antMatchers("/api/users/**")
 		.permitAll()
 		//.antMatchers("/ver/**").hasAnyRole("USER")
 		.anyRequest()

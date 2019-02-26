@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.app.core.constants.StatusConstans;
 import com.app.core.match.MatchCreateUser;
+import com.app.core.models.entity.Status;
 import com.app.core.models.entity.User;
-import com.app.core.models.services.RoleServiceImpl;
+import com.app.core.models.services.StatusServiceImpl;
 import com.app.core.models.services.UserServiceImpl;
 
-@CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.DELETE, RequestMethod.GET,
-		RequestMethod.POST, RequestMethod.PUT })
+//@CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
+@CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping("/api")
 public class UserREST {
@@ -33,11 +34,17 @@ public class UserREST {
 	@Autowired
 	private UserServiceImpl userService;
 	
-	private RoleServiceImpl roleService;
+	@Autowired
+	private StatusServiceImpl statusService;
 
 	@GetMapping("/users")
 	public List<User> getUsers() {
 		return userService.findAll();
+	}
+	
+	@GetMapping("/users/{username}/user")
+	public User getUserByUsername(@PathVariable String username) {
+		return this.userService.findByUserName(username);
 	}
 
 	@GetMapping("/users/{id}")
@@ -67,7 +74,7 @@ public class UserREST {
 		
 		User user = new User();
 		
-		user.setUsername(createUser.getUsername());
+		user.setUsername(createUser.getEmail());
 		user.setFirstName(createUser.getFirstName());
 		user.setLastName(createUser.getLastName());
 		user.setEmail(createUser.getEmail());
@@ -75,10 +82,15 @@ public class UserREST {
 		BCryptPasswordEncoder bCryptPassEncoder = new BCryptPasswordEncoder();
 		String passwordEncode = bCryptPassEncoder.encode(createUser.getPassword());
 		user.setPassword(passwordEncode);
-		user.setPhone(createUser.getPhone());
+		//user.setPhone(createUser.getPhone());
 		
+		//Status status  = new Status();
 		
-		//user.setPhoto_ex(createUser.getP)());
+		System.out.println("Status---------------------------------------->: "  + StatusConstans.ACTIVO);
+		Status status = statusService.findById(StatusConstans.ACTIVO);
+		
+		user.setStatus(status);
+		user.setEnabled(true);
 		user = userService.save(user);
 		
 		
