@@ -20,6 +20,7 @@ import com.app.core.auth.filter.JWTAuthenticationFilter;
 import com.app.core.auth.filter.JWTAuthorizationFilter;
 import com.app.core.auth.service.JWTService;
 import com.app.core.models.services.UserDetailService;
+import com.app.core.models.services.UserServiceImpl;
 
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true) // para que funciones las anotaciones de los roles en los controladores, prePostEnabled para los preauthorize 
 @Configuration
@@ -34,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JWTService jwtService;
+	
+	@Autowired
+	private UserServiceImpl userService;
 	
 	
 //	@Bean
@@ -68,13 +72,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//cors().and().authorizeRequests() //colocar el CORS().AND para que funcione en angular
 		//.antMatchers("/","/api/login").hasAnyRole("USER")
 		//.antMatchers(HttpMethod.GET, "/api/users/**").hasAnyRole("USER")
-		.antMatchers("/api/users/**")
+		.antMatchers("/api/users").hasAnyRole("USER")
+		.anyRequest()
 		.permitAll()
 		//.antMatchers("/ver/**").hasAnyRole("USER")
 		.anyRequest()
 		.authenticated()
 		.and()
-		.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService)) //registramos el filtro para solicitar persmio con JWT
+		.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService, userService)) //registramos el filtro para solicitar persmio con JWT
 		.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService)) //registra el filtro para validar al recibir el token
 		
 		.csrf().disable() //se deshabilita para evitar el csrf de los formularios de login para usar el JWT

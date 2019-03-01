@@ -16,7 +16,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.app.core.auth.service.JWTService;
 import com.app.core.constants.ContentTypeConstans;
 import com.app.core.constants.TokenConstans;
+import com.app.core.match.MatchUpdateUser;
 import com.app.core.models.entity.User;
+import com.app.core.models.services.UserServiceImpl;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,14 +26,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private AuthenticationManager authenticationManager;
-	
+
 	private JWTService jwtService;
 
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
+	private UserServiceImpl userService;
+
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService,
+			UserServiceImpl userService) {
 		this.authenticationManager = authenticationManager;
 		setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
-		
 		this.jwtService = jwtService;
+		this.userService = userService;
 	}
 
 	@Override
@@ -62,7 +67,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		response.setStatus(200);
 		username = username.trim();
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
-		
+
 		return authenticationManager.authenticate(authToken);
 	}
 
@@ -70,14 +75,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
 
-		
 		String token = jwtService.create(authResult);
 
 		response.addHeader(TokenConstans.HEADER_STRING, TokenConstans.PREFIX_TOKEN + token);
 
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("token", token);
-		body.put("user", (org.springframework.security.core.userdetails.User) authResult.getPrincipal());
+		body.put("user", ((org.springframework.security.core.userdetails.User) authResult.getPrincipal()));
+
+		User user = userService.findByUserName(
+				((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername());
+		MatchUpdateUser userData = new MatchUpdateUser(user);
+		body.put("userData", userData);
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
 		response.setStatus(200);
