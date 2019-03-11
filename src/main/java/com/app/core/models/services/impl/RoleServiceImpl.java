@@ -1,4 +1,4 @@
-package com.app.core.models.services;
+package com.app.core.models.services.impl;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.core.models.dao.IRoleDao;
 import com.app.core.models.entity.Role;
+import com.app.core.models.services.IRoleService;
 
 @Service
 public class RoleServiceImpl implements IRoleService {

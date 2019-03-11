@@ -21,8 +21,9 @@ import com.app.core.constants.StatusConstans;
 import com.app.core.match.MatchCreateUser;
 import com.app.core.models.entity.Status;
 import com.app.core.models.entity.User;
-import com.app.core.models.services.StatusServiceImpl;
-import com.app.core.models.services.UserServiceImpl;
+import com.app.core.models.services.impl.EmailServiceImpl;
+import com.app.core.models.services.impl.StatusServiceImpl;
+import com.app.core.models.services.impl.UserServiceImpl;
 
 //@CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 @RestController
@@ -31,18 +32,24 @@ public class UserREST {
 
 	@Autowired
 	private UserServiceImpl userService;
-	
+
 	@Autowired
 	private StatusServiceImpl statusService;
+
+	@Autowired
+	private EmailServiceImpl emailService;
 
 	@GetMapping("/users")
 	public List<User> getUsers() {
 		return userService.findAll();
 	}
-	
+
 	@GetMapping("/users/{username}/user")
 	public User getUserByUsername(@PathVariable String username) {
-		return this.userService.findByUserName(username);
+
+		User user = this.userService.findByUserName(username);
+		emailService.sendEmail(user);
+		return user;
 	}
 
 	@GetMapping("/users/{id}")
@@ -69,34 +76,28 @@ public class UserREST {
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
 	public User create(@RequestBody MatchCreateUser createUser) {
-		
+
 		User user = new User();
-		
+
 		user.setUsername(createUser.getEmail());
 		user.setFirstName(createUser.getFirstName());
 		user.setLastName(createUser.getLastName());
 		user.setEmail(createUser.getEmail());
-		
+
 		BCryptPasswordEncoder bCryptPassEncoder = new BCryptPasswordEncoder();
 		String passwordEncode = bCryptPassEncoder.encode(createUser.getPassword());
 		user.setPassword(passwordEncode);
-		//user.setPhone(createUser.getPhone());
-		
-		//Status status  = new Status();
-		
-		System.out.println("Status---------------------------------------->: "  + StatusConstans.ACTIVO);
+		// user.setPhone(createUser.getPhone());
+
+		// Status status = new Status();
+
+		System.out.println("Status---------------------------------------->: " + StatusConstans.ACTIVO);
 		Status status = statusService.findById(StatusConstans.ACTIVO);
-		
+
 		user.setStatus(status);
 		user.setEnabled(true);
 		user = userService.save(user);
-		
-		
-		
-		
-		
-		
-		
+
 		return userService.save(user);
 	}
 

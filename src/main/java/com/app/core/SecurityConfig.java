@@ -1,7 +1,6 @@
 package com.app.core;
 
 import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,16 +10,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import com.app.core.auth.filter.JWTAuthenticationFilter;
 import com.app.core.auth.filter.JWTAuthorizationFilter;
 import com.app.core.auth.service.JWTService;
 import com.app.core.models.services.UserDetailService;
-import com.app.core.models.services.UserServiceImpl;
+import com.app.core.models.services.impl.UserServiceImpl;
 
 @EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true) // para que funciones las anotaciones de los roles en los controladores, prePostEnabled para los preauthorize 
 @Configuration
@@ -38,13 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private UserServiceImpl userService;
-	
-	
-//	@Bean
-//    CorsFilter corsFilter() {
-//        CorsFilter filter = new CorsFilter();
-//        return filter;
-//    }
 	
 	
 	@Override

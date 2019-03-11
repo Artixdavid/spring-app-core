@@ -1,4 +1,4 @@
-package com.app.core.models.services;
+package com.app.core.models.services.impl;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.core.models.dao.IUserDao;
 import com.app.core.models.entity.User;
+import com.app.core.models.services.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService {

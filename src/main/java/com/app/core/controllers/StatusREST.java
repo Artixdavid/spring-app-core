@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.core.models.entity.Status;
-import com.app.core.models.services.StatusServiceImpl;
+import com.app.core.models.services.impl.StatusServiceImpl;
 
 @CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.GET,  })
 @RestController
