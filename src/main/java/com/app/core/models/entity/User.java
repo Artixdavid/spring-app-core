@@ -64,7 +64,7 @@ public class User implements Serializable {
 
 	private boolean enabled;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "status_id", referencedColumnName = "id")
 	private Status status;
 
@@ -75,7 +75,7 @@ public class User implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createAt;
 
-	@Column(name = "about_me", columnDefinition="text")
+	@Column(name = "about_me", columnDefinition = "text")
 	private String aboutMe;
 
 	@Column(name = "second_name")
@@ -90,10 +90,21 @@ public class User implements Serializable {
 	@Column(name = "address")
 	private String address;
 
+	@Column(name = "token", columnDefinition="text")
+	private String token;
+
 	@PrePersist
 	private void prePersist() {
 		createAt = new Date();
 		enabled = Boolean.TRUE;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public Long getId() {

@@ -86,6 +86,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		User user = userService.findByUserName(
 				((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername());
 		MatchUpdateUser userData = new MatchUpdateUser(user);
+		
+		
+		System.out.println("El Token: " + user.getToken());
+		user.setToken(token);
+		
+		
+		System.out.println("Status: " + user.getStatus().getName());
+		userService.save(user);
+		
+		
 		body.put("userData", userData);
 
 		response.getWriter().write(new ObjectMapper().writeValueAsString(body));
