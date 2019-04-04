@@ -36,17 +36,20 @@ public class JWTServiceImpl implements JWTService {
 	@Override
 	public boolean validate(String token) {
 		try {
+			System.out.println("Token recibido para validar: " + token);
 			getClaims(token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
+			System.out.println("Error de valdiacion de los claims: " + e.getMessage());
 			return false;
 		}
 	}
 
 	@Override
 	public Claims getClaims(String token) {
-		Claims claimsToken = Jwts.parser().setSigningKey(TokenConstans.SECRET_KEY).parseClaimsJws(resolve(token))
-				.getBody();
+		String tokn = resolve(token);
+		System.out.println("Token resolve: " + tokn);
+		Claims claimsToken = Jwts.parser().setSigningKey(TokenConstans.SECRET_KEY).parseClaimsJws(tokn).getBody();
 		return claimsToken;
 	}
 

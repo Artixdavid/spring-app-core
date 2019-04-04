@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.core.auth.service.JWTService;
 import com.app.core.constants.StatusConstans;
+import com.app.core.constants.TokenConstans;
 import com.app.core.match.MatchCreateUser;
 import com.app.core.models.dao.IUserDao;
 import com.app.core.models.entity.Status;
@@ -55,7 +56,7 @@ public class UserREST {
 
 	@Autowired
 	private JWTService jwtService;
-	
+
 	@Autowired
 	private UserDetailService userDetailService;
 
@@ -159,12 +160,23 @@ public class UserREST {
 			Collection<? extends GrantedAuthority> role = userDetails.getAuthorities();
 
 			String token = this.jwtService.createJWT(user.getUsername(), this.jwtService.setClaims(role));
-			
+
 			System.out.println("Aqui el token: " + token);
 
 			mailClient.prepareAndSend(user, token);
 
 		}
+	}
+
+	@GetMapping("/users/{token}/validate")
+	public User validate(@PathVariable String token) {
+
+		String username = this.jwtService.getUsername(TokenConstans.PREFIX_TOKEN + token);
+		if (username != null) {
+			return userDao.findByUsername(username);
+		}
+
+		return null;
 	}
 
 }
