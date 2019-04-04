@@ -2,7 +2,6 @@ package com.app.core.auth.service;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -16,11 +15,15 @@ public interface JWTService {
 	public boolean validate(String token);
 
 	public Claims getClaims(String token);
+	
+	public Claims setClaims(Collection<? extends GrantedAuthority> role);
 
 	public String getUsername(String token);
 
 	public Collection<? extends GrantedAuthority> getRoles(String token) throws IOException;
 
 	public String resolve(String token);
+	
+	public String createJWT(String username, Claims claims);
 
 }

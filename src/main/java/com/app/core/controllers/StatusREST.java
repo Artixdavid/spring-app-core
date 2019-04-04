@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.app.core.models.entity.Status;
-import com.app.core.models.services.impl.StatusServiceImpl;
+import com.app.core.models.services.IStatusService;
 
 @CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.GET,  })
 @RestController
@@ -16,7 +16,7 @@ import com.app.core.models.services.impl.StatusServiceImpl;
 public class StatusREST {
 
 	@Autowired
-	private StatusServiceImpl statusService;
+	private IStatusService statusService;
 
 	@GetMapping("/status")
 	public List<Status> getUsers() {

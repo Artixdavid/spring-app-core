@@ -1,5 +1,7 @@
 package com.app.core.controllers;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +21,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.app.core.auth.service.JWTService;
 import com.app.core.constants.StatusConstans;
 import com.app.core.match.MatchCreateUser;
+import com.app.core.models.dao.IUserDao;
 import com.app.core.models.entity.Status;
 import com.app.core.models.entity.User;
-import com.app.core.models.services.impl.EmailServiceImpl;
-import com.app.core.models.services.impl.StatusServiceImpl;
-import com.app.core.models.services.impl.UserServiceImpl;
+import com.app.core.models.services.IEmailService;
+import com.app.core.models.services.IStatusService;
+import com.app.core.models.services.IUserService;
+import com.app.core.models.services.UserDetailService;
+import com.app.core.models.services.impl.MailClient;
 
 //@CrossOrigin(origins = { "http://localhost:4200" }, methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 @RestController
@@ -31,13 +39,25 @@ import com.app.core.models.services.impl.UserServiceImpl;
 public class UserREST {
 
 	@Autowired
-	private UserServiceImpl userService;
+	private IUserService userService;
 
 	@Autowired
-	private StatusServiceImpl statusService;
+	private IUserDao userDao;
 
 	@Autowired
-	private EmailServiceImpl emailService;
+	private IStatusService statusService;
+
+	@Autowired
+	private IEmailService emailService;
+
+	@Autowired
+	private MailClient mailClient;
+
+	@Autowired
+	private JWTService jwtService;
+	
+	@Autowired
+	private UserDetailService userDetailService;
 
 	@GetMapping("/users")
 	public List<User> getUsers() {
@@ -48,7 +68,7 @@ public class UserREST {
 	public User getUserByUsername(@PathVariable String username) {
 
 		User user = this.userService.findByUserName(username);
-		emailService.sendEmail(user);
+
 		return user;
 	}
 
@@ -94,6 +114,8 @@ public class UserREST {
 		System.out.println("Status---------------------------------------->: " + StatusConstans.ACTIVO);
 		Status status = statusService.findById(StatusConstans.ACTIVO);
 
+		emailService.sendEmail(user);
+
 		user.setStatus(status);
 		user.setEnabled(true);
 		user = userService.save(user);
@@ -120,6 +142,29 @@ public class UserREST {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Long id) {
 		userService.delete(id);
+	}
+
+	@GetMapping("/users/{email}/recovery")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void recovery(@PathVariable String email) throws IOException {
+
+		System.out.println("Email recibido: " + email);
+		User user = userDao.findByEmail(email);
+
+		if (user != null) {
+
+			System.out.println("Se enviara un email a " + user.getEmail());
+
+			UserDetails userDetails = this.userDetailService.loadUserByUsername(user.getUsername());
+			Collection<? extends GrantedAuthority> role = userDetails.getAuthorities();
+
+			String token = this.jwtService.createJWT(user.getUsername(), this.jwtService.setClaims(role));
+			
+			System.out.println("Aqui el token: " + token);
+
+			mailClient.prepareAndSend(user, token);
+
+		}
 	}
 
 }

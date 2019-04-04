@@ -45,4 +45,9 @@ public class UserServiceImpl implements IUserService {
 	public User findByUserName(String username) {
 		return userDao.findByUsername(username);
 	}
+
+	@Transactional(readOnly = true)
+	public User findByEmail(String email) {
+		return this.userDao.findByEmail(email);
+	}
 }

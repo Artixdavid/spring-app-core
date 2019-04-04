@@ -26,15 +26,9 @@ public class JWTServiceImpl implements JWTService {
 
 		Collection<? extends GrantedAuthority> role = auth.getAuthorities();
 
-		Claims claims = Jwts.claims();
-		claims.put(TokenConstans.ROLE_TOKEN, new ObjectMapper().writeValueAsString(role));
-		
-		String token = Jwts.builder()
-				.setClaims(claims)
-				.setSubject(username)
-				.signWith(TokenConstans.SECRET_KEY)
-				.setExpiration(new Date(System.currentTimeMillis() + TokenConstans.EXPIRATION_DATE))
-				.compact();
+		Claims claims = this.setClaims(role);
+
+		String token = this.createJWT(username, claims);
 
 		return token;
 	}
@@ -51,9 +45,7 @@ public class JWTServiceImpl implements JWTService {
 
 	@Override
 	public Claims getClaims(String token) {
-		Claims claimsToken = Jwts.parser()
-				.setSigningKey(TokenConstans.SECRET_KEY)
-				.parseClaimsJws(resolve(token))
+		Claims claimsToken = Jwts.parser().setSigningKey(TokenConstans.SECRET_KEY).parseClaimsJws(resolve(token))
 				.getBody();
 		return claimsToken;
 	}
@@ -69,8 +61,7 @@ public class JWTServiceImpl implements JWTService {
 		Object role = getClaims(token).get(TokenConstans.ROLE_TOKEN);
 
 		Collection<? extends GrantedAuthority> authorities = Arrays
-				.asList(new ObjectMapper()
-						.addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
+				.asList(new ObjectMapper().addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
 						.readValue(role.toString().getBytes(), SimpleGrantedAuthority[].class));
 		return authorities;
 	}
@@ -81,6 +72,25 @@ public class JWTServiceImpl implements JWTService {
 			return token.replace(TokenConstans.PREFIX_TOKEN, "");
 		}
 		return null;
+	}
+
+	@Override
+	public String createJWT(String username, Claims claims) {
+		return Jwts.builder().setClaims(claims).setSubject(username).signWith(TokenConstans.SECRET_KEY)
+				.setExpiration(new Date(System.currentTimeMillis() + TokenConstans.EXPIRATION_DATE)).compact();
+	}
+
+	@Override
+	public Claims setClaims(Collection<? extends GrantedAuthority> role) {
+		Claims claims = Jwts.claims();
+		try {
+			claims.put(TokenConstans.ROLE_TOKEN, new ObjectMapper().writeValueAsString(role));
+		} catch (JsonProcessingException e) {
+			System.out.println("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return claims;
 	}
 
 }
