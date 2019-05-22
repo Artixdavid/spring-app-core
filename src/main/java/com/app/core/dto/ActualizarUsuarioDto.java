@@ -1,11 +1,11 @@
-package com.app.core.match;
+package com.app.core.dto;
 
 import java.sql.Date;
 
 import com.app.core.models.entity.Status;
 import com.app.core.models.entity.User;
 
-public class MatchUpdateUser {
+public class ActualizarUsuarioDto {
 
 	private String firstName;
 	private String lastName;
@@ -21,11 +21,11 @@ public class MatchUpdateUser {
 	private String address;
 	private String phonoEx;
 
-	public MatchUpdateUser() {
+	public ActualizarUsuarioDto() {
 
 	}
 
-	public MatchUpdateUser(User user) {
+	public ActualizarUsuarioDto(User user) {
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
 		this.motherLastName = user.getMotherLastName();

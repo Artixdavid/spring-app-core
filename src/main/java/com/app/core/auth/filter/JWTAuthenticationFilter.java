@@ -16,7 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.app.core.auth.service.JWTService;
 import com.app.core.constants.ContentTypeConstans;
 import com.app.core.constants.TokenConstans;
-import com.app.core.match.MatchUpdateUser;
+import com.app.core.dto.ActualizarUsuarioDto;
 import com.app.core.models.entity.User;
 import com.app.core.models.services.impl.UserServiceImpl;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -85,7 +85,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		User user = userService.findByUserName(
 				((org.springframework.security.core.userdetails.User) authResult.getPrincipal()).getUsername());
-		MatchUpdateUser userData = new MatchUpdateUser(user);
+		ActualizarUsuarioDto userData = new ActualizarUsuarioDto(user);
 		
 		
 		System.out.println("El Token: " + user.getToken());

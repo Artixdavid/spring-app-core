@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.core.auth.service.JWTService;
 import com.app.core.constants.StatusConstans;
 import com.app.core.constants.TokenConstans;
-import com.app.core.match.MatchCreateUser;
+import com.app.core.dto.ActualizarUsuarioDto;
+import com.app.core.dto.CrearUsuarioDto;
 import com.app.core.models.dao.IUserDao;
 import com.app.core.models.entity.Status;
 import com.app.core.models.entity.User;
@@ -96,7 +97,7 @@ public class UserREST {
 
 	@PostMapping("/users")
 	@ResponseStatus(HttpStatus.CREATED)
-	public User create(@RequestBody MatchCreateUser createUser) {
+	public User create(@RequestBody CrearUsuarioDto createUser) {
 
 		User user = new User();
 
@@ -124,19 +125,24 @@ public class UserREST {
 		return userService.save(user);
 	}
 
-	@PutMapping("/users/{id}")
+	@PutMapping("/users/{userName}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public User update(@RequestBody User user, @PathVariable Long id) {
-		User usuario = userService.findById(id);
+	public User update(@RequestBody ActualizarUsuarioDto user, @PathVariable String userName) {
+		User usuario = userService.findByUserName(userName);
 		if (usuario == null) {
 			System.out.println("Usuario no encontrado");
 		}
 
 		usuario.setFirstName(user.getFirstName());
 		usuario.setLastName(user.getLastName());
+		usuario.setAddress(user.getAddress());
+		usuario.setFechaNacimiento(user.getFechaNacimiento());
+		usuario.setAboutMe(user.getAboutMe());
+		usuario.setSecondName(user.getSecondName());
+		
 		userService.save(usuario);
 
-		return user;
+		return usuario;
 	}
 
 	@DeleteMapping("/users/{id}")

@@ -1,6 +1,6 @@
-package com.app.core.match;
+package com.app.core.dto;
 
-public class MatchCreateUser {
+public class CrearUsuarioDto {
 
 	// private String username;
 	private String firstName;
